@@ -45,7 +45,7 @@ def load_data():
     df = pd.read_csv('streamlit_app/data.csv')
     df_no_dav = pd.read_csv('streamlit_app/model_output_no_dav.csv')
     df_dav = pd.read_csv('streamlit_app/model_output_dav.csv')
-    with open('streamlit/lightgbm_30cols_davies.pkl', 'rb') as file:
+    with open('streamlit_app/lightgbm_30cols_davies.pkl', 'rb') as file:
         data = pickle.load(file)
     return df,df_no_dav,df_dav, data
 
