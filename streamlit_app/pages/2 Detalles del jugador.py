@@ -109,7 +109,7 @@ css = """
 @st.cache_data
 def load_data():
     # Cargar tu conjunto de datos de jugadores
-    return pd.read_csv('data.csv')
+    return pd.read_csv('streamlit_app/data.csv')
 
 def normalize_features(df, features):
     scaler = StandardScaler()
