@@ -14,9 +14,9 @@ initial_sidebar_state="expanded")
 # Función para cargar los datos
 @st.cache_data
 def load_data():
-    df = pd.read_csv('data.csv')
-    df_no_dav = pd.read_csv('model_output_no_dav.csv')
-    df_dav = pd.read_csv('model_output_dav.csv')
+    df = pd.read_csv('streamlit_app/data.csv')
+    df_no_dav = pd.read_csv('streamlit_app/model_output_no_dav.csv')
+    df_dav = pd.read_csv('streamlit_app/model_output_dav.csv')
     return df,df_no_dav,df_dav
 
 # Función para normalizar las características seleccionadas
