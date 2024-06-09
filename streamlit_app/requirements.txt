@@ -2,3 +2,5 @@ plotly
 scikit-learn
 matplotlib
 soccerplots
+lightgbm
+xgboost
