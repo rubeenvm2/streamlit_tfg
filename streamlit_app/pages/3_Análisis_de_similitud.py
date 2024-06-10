@@ -233,48 +233,48 @@ try:
     st.write(f"Características seleccionadas: {selected_features_display}")
     # Slider para seleccionar el número de jugadores similares a mostrar
     top_n = st.slider('Número de jugadores similares a mostrar', 1, 20, 10)
+    # Botón para ejecutar el análisis
+    if selected_team and len(selected_features) > 0:
+        similar_players = find_similar_players(df, selected_player, selected_team, selected_features, top_n, selected_leagues, selected_teams, age_range)
+        st.header(f'Jugadores Similares a {selected_player.player} en {selected_team}')
+        selected_player_data = df[(df['player'] == selected_player.player) & (df['season'] == df['season'].max()) & (df.team == selected_team)]
+        for i, row in similar_players.iterrows():
+            st.write(f"Jugador: {row['player']} | Equipo: {row['team']} | Similitud: {row['similarity']:.2f}%")
+    
+        # Mostrar lista visual de jugadores similares con el porcentaje de similitud
+        similar_players_list = []
+        for i, row in similar_players.iterrows():
+            similar_players_list.append(f"{row['player']} | {row['team']} | Age: {row['age']} | Similitud: {row['similarity']:.2f}%")
+        
+        selected_similar_player = st.selectbox('Selecciona un jugador para ver una comparación más exhaustiva.', similar_players_list)
+        
+        # Botón para mostrar la tabla completa
+        similar_players = pd.concat([selected_player_data, similar_players])
+        if stateful_button('Mostrar tabla con las estadísticas.', key="similar_players"):
+        #if st.button('Mostrar detalles completos'):
+            st.write(similar_players[['player', 'team', 'pos'] + ['similarity'] + selected_features ])
+        
+        # Crear radar plot para el jugador seleccionado
+        similar_player_name = selected_similar_player.split('|')[0].strip()
+        df_normalized = normalize_features(df.copy(), selected_features)
+        if len(selected_features) < 15 and len(selected_features) >= 3:
+            similar_player_data_norm = df_normalized[(df['player'] == similar_player_name) & (df['season'] == df['season'].max())]
+            selected_player_data_norm = df_normalized[(df['player'] == selected_player.player) & (df['season'] == df['season'].max()) & (df.team == selected_team)]
+            
+            create_radar_plot(selected_player_data_norm, similar_player_data_norm, selected_features)
+                # Crear historia del jugador seleccionado
+            st.header("Histórico del jugador seleccionado.")
+            create_player_history(df, similar_player_name, selected_features)
+        else:
+            st.write("Por favor, selecciona menos de 15 o más de 3 características para poder ver un radar plot y el histórico del jugador escogido en las diferentes características")
+        st.session_state.similar_player = similar_player_name
+        st.session_state.similar_team = selected_similar_player.split('|')[1].strip()
+        st.write(f"Presionando el botón en la parte inferior serás redirigido a una página para poder tener una predicción de cual será el rendimiento de {similar_player_name} en la temporada siguiente.")
+        st.page_link("pages/4_Predicción_de_rendimiento.py", label="Botón")
+    else:
+        st.write(f"Porfavor, selecciona almenos 3 características para poder encontrar el jugador que más se asemeje a {target_player.player} basandose en las estadísticas seleccionadas.")
+        st.write("También puedes clicar el botón situado en la barra lateral para seleccionar todas las características.")
 
 except:
     st.write("Selecciona en la pestaña de detalles del jugador a un jugador antes de hacer el análisis de similitud.")
 
-# Botón para ejecutar el análisis
-if selected_team and len(selected_features) > 0:
-    similar_players = find_similar_players(df, selected_player, selected_team, selected_features, top_n, selected_leagues, selected_teams, age_range)
-    st.header(f'Jugadores Similares a {selected_player.player} en {selected_team}')
-    selected_player_data = df[(df['player'] == selected_player.player) & (df['season'] == df['season'].max()) & (df.team == selected_team)]
-    for i, row in similar_players.iterrows():
-        st.write(f"Jugador: {row['player']} | Equipo: {row['team']} | Similitud: {row['similarity']:.2f}%")
-
-    # Mostrar lista visual de jugadores similares con el porcentaje de similitud
-    similar_players_list = []
-    for i, row in similar_players.iterrows():
-        similar_players_list.append(f"{row['player']} | {row['team']} | Age: {row['age']} | Similitud: {row['similarity']:.2f}%")
-    
-    selected_similar_player = st.selectbox('Selecciona un jugador para ver una comparación más exhaustiva.', similar_players_list)
-    
-    # Botón para mostrar la tabla completa
-    similar_players = pd.concat([selected_player_data, similar_players])
-    if stateful_button('Mostrar tabla con las estadísticas.', key="similar_players"):
-    #if st.button('Mostrar detalles completos'):
-        st.write(similar_players[['player', 'team', 'pos'] + ['similarity'] + selected_features ])
-    
-    # Crear radar plot para el jugador seleccionado
-    similar_player_name = selected_similar_player.split('|')[0].strip()
-    df_normalized = normalize_features(df.copy(), selected_features)
-    if len(selected_features) < 15 and len(selected_features) >= 3:
-        similar_player_data_norm = df_normalized[(df['player'] == similar_player_name) & (df['season'] == df['season'].max())]
-        selected_player_data_norm = df_normalized[(df['player'] == selected_player.player) & (df['season'] == df['season'].max()) & (df.team == selected_team)]
-        
-        create_radar_plot(selected_player_data_norm, similar_player_data_norm, selected_features)
-            # Crear historia del jugador seleccionado
-        st.header("Histórico del jugador seleccionado.")
-        create_player_history(df, similar_player_name, selected_features)
-    else:
-        st.write("Por favor, selecciona menos de 15 o más de 3 características para poder ver un radar plot y el histórico del jugador escogido en las diferentes características")
-    st.session_state.similar_player = similar_player_name
-    st.session_state.similar_team = selected_similar_player.split('|')[1].strip()
-    st.write(f"Presionando el botón en la parte inferior serás redirigido a una página para poder tener una predicción de cual será el rendimiento de {similar_player_name} en la temporada siguiente.")
-    st.page_link("pages/4_Predicción_de_rendimiento.py", label="Botón")
-else:
-    st.write(f"Porfavor, selecciona almenos 3 características para poder encontrar el jugador que más se asemeje a {target_player.player} basandose en las estadísticas seleccionadas.")
-    st.write("También puedes clicar el botón situado en la barra lateral para seleccionar todas las características.")
