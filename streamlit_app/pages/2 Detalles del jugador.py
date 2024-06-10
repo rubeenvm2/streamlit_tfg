@@ -160,7 +160,7 @@ try:
         """
         
         # Mostrar la tabla de biografía del jugador en Streamlit
-        st.markdown(html, unsafe_allow_html=True)
+        st.markdown(html, unsafe_allow_html=False)
         
         selected_features = st.multiselect('Seleccionar características clave:', df.select_dtypes(include=np.number).columns)
         #selected_features = ['xG', 'nxG']  # Puedes agregar más estadísticas aquí
