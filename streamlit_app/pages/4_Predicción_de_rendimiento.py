@@ -105,9 +105,7 @@ df, df_no_dav, df_dav, data = load_data()
 try:
     similar_player = st.session_state.similar_player
     similar_team = st.session_state.similar_team
-except:
-    st.write("Selecciona en la pestaña de análisis de similitud a un jugador y su equipo para comparar antes de hacer la predicción del rendimiento.")
-if similar_team:
+    if similar_team:
     categorical_cols = []
     df_dav['pos'] = df_dav['pos'].apply(map_positions)
     df_no_dav['pos'] = df_no_dav['pos'].apply(map_positions)
@@ -178,3 +176,6 @@ if similar_team:
         if stateful_button(f'Predecir rendimiento de {similar_player} en la temporada siguiente a la actual. (sin DAVIES)', key="pred_no_DAV"):
             prediction_value = df_no_dav[(df_no_dav.player == similar_player) & (df_no_dav.season == df_no_dav.season.max()) & (df_no_dav.team == similar_team)]['DAVIES_next_season'].unique()[0]
             st.write(f"La performance de este año del jugador ha sido de {actual_value:.2f}. La predicción para el año siguiente es {prediction_value:.2f}")
+
+except:
+    st.write("Selecciona en la pestaña de análisis de similitud a un jugador y su equipo para comparar antes de hacer la predicción del rendimiento.")
