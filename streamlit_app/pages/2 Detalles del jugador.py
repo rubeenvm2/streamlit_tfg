@@ -119,20 +119,21 @@ def normalize_features(df, features):
 df = load_data()
 try:
     team_of_player = st.session_state.selected_team
+    st.title(f"Detalles del jugador")
+    st.write(f"Escoge un jugador de tu equipo ({team_of_player}) para analizar y compararlo posteriormente frente a otros jugadores.")
+    last_season_df = df[(df.season=='2023-2024') & (df.team == team_of_player)].drop('season', axis=1)
+    selected_player = st.selectbox("Escoge un jugador", last_season_df['player'].unique())
+    player = last_season_df[(last_season_df['player'] == selected_player) & (last_season_df['team'] == team_of_player)]
+    st.header("Player bio")
+    # Información de la biografía del jugador
+    player_name = player['player'].values[0]
+    player_position = player['pos'].values[0]
+    player_age = player['age'].values[0]
+    player_nation = player['nation'].values[0]
+    player_starts = player['Starts'].values[0]
 except:
     st.write("Selecciona a un equipo en la pestaña de identificación posición débil antes de analizar a un jugador.")
-st.title(f"Detalles del jugador")
-st.write(f"Escoge un jugador de tu equipo ({team_of_player}) para analizar y compararlo posteriormente frente a otros jugadores.")
-last_season_df = df[(df.season=='2023-2024') & (df.team == team_of_player)].drop('season', axis=1)
-selected_player = st.selectbox("Escoge un jugador", last_season_df['player'].unique())
-player = last_season_df[(last_season_df['player'] == selected_player) & (last_season_df['team'] == team_of_player)]
-st.header("Player bio")
-# Información de la biografía del jugador
-player_name = player['player'].values[0]
-player_position = player['pos'].values[0]
-player_age = player['age'].values[0]
-player_nation = player['nation'].values[0]
-player_starts = player['Starts'].values[0]
+
 
 # HTML para mostrar los datos del jugador
 html = f"""
