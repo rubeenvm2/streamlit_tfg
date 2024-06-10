@@ -117,7 +117,10 @@ def normalize_features(df, features):
     return df
 
 df = load_data()
-team_of_player = st.session_state.selected_team
+try:
+    team_of_player = st.session_state.selected_team
+except:
+    st.write("Selecciona a un equipo en la pestaña de identificación posición débil antes de analizar a un jugador.")
 st.title(f"Detalles del jugador")
 st.write(f"Escoge un jugador de tu equipo ({team_of_player}) para analizar y compararlo posteriormente frente a otros jugadores.")
 last_season_df = df[(df.season=='2023-2024') & (df.team == team_of_player)].drop('season', axis=1)
