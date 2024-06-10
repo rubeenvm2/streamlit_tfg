@@ -131,42 +131,43 @@ try:
     player_age = player['age'].values[0]
     player_nation = player['nation'].values[0]
     player_starts = player['Starts'].values[0]
+    
+    # HTML para mostrar los datos del jugador
+    html = f"""
+    {css}
+    <div class="bio-grid">
+        <div class="bio-stat">
+            <div class="bio-stat-heading">Name</div>
+            <div class="bio-stat-value" id="player-name"><span class="white-text">{player_name}</span></div>
+        </div>
+        <div class="bio-stat">
+            <div class="bio-stat-heading">Position</div>
+            <div class="bio-stat-value" id="player-position"><span class="white-text">{player_position}</span></div>
+        </div>
+        <div class="bio-stat">
+            <div class="bio-stat-heading">Age</div>
+            <div class="bio-stat-value" id="player-age"><span class="white-text">{player_age}</span></div>
+        </div>
+        <div class="bio-stat">
+            <div class="bio-stat-heading">Nation</div>
+            <div class="bio-stat-value" id="player-nation"><span class="white-text">{player_nation}</span></div>
+        </div>
+        <div class="bio-stat">
+            <div class="bio-stat-heading">Starts</div>
+            <div class="bio-stat-value" id="player-starts"><span class="white-text">{player_starts}</span></div>
+        </div>
+    </div>
+    """
+    
+    # Mostrar la tabla de biografía del jugador en Streamlit
+    st.markdown(html, unsafe_allow_html=True)
+    
+    selected_features = st.multiselect('Seleccionar características clave:', df.select_dtypes(include=np.number).columns)
+    #selected_features = ['xG', 'nxG']  # Puedes agregar más estadísticas aquí
 except:
     st.write("Selecciona a un equipo en la pestaña de identificación posición débil antes de analizar a un jugador.")
 
 
-# HTML para mostrar los datos del jugador
-html = f"""
-{css}
-<div class="bio-grid">
-    <div class="bio-stat">
-        <div class="bio-stat-heading">Name</div>
-        <div class="bio-stat-value" id="player-name"><span class="white-text">{player_name}</span></div>
-    </div>
-    <div class="bio-stat">
-        <div class="bio-stat-heading">Position</div>
-        <div class="bio-stat-value" id="player-position"><span class="white-text">{player_position}</span></div>
-    </div>
-    <div class="bio-stat">
-        <div class="bio-stat-heading">Age</div>
-        <div class="bio-stat-value" id="player-age"><span class="white-text">{player_age}</span></div>
-    </div>
-    <div class="bio-stat">
-        <div class="bio-stat-heading">Nation</div>
-        <div class="bio-stat-value" id="player-nation"><span class="white-text">{player_nation}</span></div>
-    </div>
-    <div class="bio-stat">
-        <div class="bio-stat-heading">Starts</div>
-        <div class="bio-stat-value" id="player-starts"><span class="white-text">{player_starts}</span></div>
-    </div>
-</div>
-"""
-
-# Mostrar la tabla de biografía del jugador en Streamlit
-st.markdown(html, unsafe_allow_html=True)
-
-selected_features = st.multiselect('Seleccionar características clave:', df.select_dtypes(include=np.number).columns)
-#selected_features = ['xG', 'nxG']  # Puedes agregar más estadísticas aquí
 if len(selected_features) > 0:
     position_data = df[df['pos'] == player_position][selected_features]
     player_data = df[df['player'] == selected_player]
