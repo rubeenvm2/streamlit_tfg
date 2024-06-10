@@ -192,49 +192,50 @@ def select_features():
 df, df_no_dav, df_dav = load_data()
 try:
     target_player = st.session_state.player
+    # Título de la aplicación
+    st.title('Búsqueda de jugadores similares')
+    st.write(f"En esta página puedes observar aquellos jugadores con un perfil similar a {target_player.player} de tal manera que puedas encontrar al sustituto ideal.")
+    # Columnas para los filtros principales
+    selected_player = st.session_state.player
+    selected_team = st.session_state.player.team
+    
+    # Selección de características y filtros adicionales
+    st.header('Filtros Adicionales')
+    col3, col4 = st.columns(2)
+    with col3:
+        filter_by_league = st.checkbox('Filtrar por ligas')
+        if filter_by_league:
+            selected_leagues = st.multiselect('Selecciona las ligas', df['league'].unique())
+        else:
+            selected_leagues = None
+        
+        filter_by_team = st.checkbox('Filtrar por equipos')
+        if filter_by_team:
+            selected_teams = st.multiselect('Selecciona los equipos', df['team'].unique())
+        else:
+            selected_teams = None
+    with col4:
+        filter_by_age = st.checkbox('Filtrar por rango de edad')
+        if filter_by_age:
+            age_range = st.slider('Selecciona el rango de edad', min_value=int(df['age'].min()), max_value=int(df['age'].max()))
+        else:
+            age_range = None
+    
+    selected_features = select_features()
+    
+    # Mostrar solo algunas características seleccionadas y un contador
+    MAX_DISPLAYED_FEATURES = 5
+    if len(selected_features) <= MAX_DISPLAYED_FEATURES:
+        selected_features_display = ", ".join(selected_features)
+    else:
+        selected_features_display = ", ".join(selected_features[:MAX_DISPLAYED_FEATURES]) + f", y {len(selected_features) - MAX_DISPLAYED_FEATURES} más"
+    
+    st.write(f"Características seleccionadas: {selected_features_display}")
+    # Slider para seleccionar el número de jugadores similares a mostrar
+    top_n = st.slider('Número de jugadores similares a mostrar', 1, 20, 10)
+
 except:
     st.write("Selecciona en la pestaña de detalles del jugador a un jugador antes de hacer el análisis de similitud.")
-# Título de la aplicación
-st.title('Búsqueda de jugadores similares')
-st.write(f"En esta página puedes observar aquellos jugadores con un perfil similar a {target_player.player} de tal manera que puedas encontrar al sustituto ideal.")
-# Columnas para los filtros principales
-selected_player = st.session_state.player
-selected_team = st.session_state.player.team
-
-# Selección de características y filtros adicionales
-st.header('Filtros Adicionales')
-col3, col4 = st.columns(2)
-with col3:
-    filter_by_league = st.checkbox('Filtrar por ligas')
-    if filter_by_league:
-        selected_leagues = st.multiselect('Selecciona las ligas', df['league'].unique())
-    else:
-        selected_leagues = None
-    
-    filter_by_team = st.checkbox('Filtrar por equipos')
-    if filter_by_team:
-        selected_teams = st.multiselect('Selecciona los equipos', df['team'].unique())
-    else:
-        selected_teams = None
-with col4:
-    filter_by_age = st.checkbox('Filtrar por rango de edad')
-    if filter_by_age:
-        age_range = st.slider('Selecciona el rango de edad', min_value=int(df['age'].min()), max_value=int(df['age'].max()))
-    else:
-        age_range = None
-
-selected_features = select_features()
-
-# Mostrar solo algunas características seleccionadas y un contador
-MAX_DISPLAYED_FEATURES = 5
-if len(selected_features) <= MAX_DISPLAYED_FEATURES:
-    selected_features_display = ", ".join(selected_features)
-else:
-    selected_features_display = ", ".join(selected_features[:MAX_DISPLAYED_FEATURES]) + f", y {len(selected_features) - MAX_DISPLAYED_FEATURES} más"
-
-st.write(f"Características seleccionadas: {selected_features_display}")
-# Slider para seleccionar el número de jugadores similares a mostrar
-top_n = st.slider('Número de jugadores similares a mostrar', 1, 20, 10)
 
 # Botón para ejecutar el análisis
 if selected_team and len(selected_features) > 0:
