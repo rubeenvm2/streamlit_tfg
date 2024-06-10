@@ -102,8 +102,11 @@ def map_positions(positions):
 st.title("Predicción de rendimiento")
 
 df, df_no_dav, df_dav, data = load_data()
-similar_player = st.session_state.similar_player
-similar_team = st.session_state.similar_team
+try:
+    similar_player = st.session_state.similar_player
+    similar_team = st.session_state.similar_team
+except:
+    st.write("Selecciona en la pestaña de análisis de similitud a un jugador y su equipo para comparar antes de hacer la predicción del rendimiento.")
 categorical_cols = []
 df_dav['pos'] = df_dav['pos'].apply(map_positions)
 df_no_dav['pos'] = df_no_dav['pos'].apply(map_positions)
