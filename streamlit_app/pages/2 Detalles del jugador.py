@@ -164,46 +164,47 @@ try:
     
     selected_features = st.multiselect('Seleccionar características clave:', df.select_dtypes(include=np.number).columns)
     #selected_features = ['xG', 'nxG']  # Puedes agregar más estadísticas aquí
+    if len(selected_features) > 0:
+        position_data = df[df['pos'] == player_position][selected_features]
+        player_data = df[df['player'] == selected_player]
+        player_position = player_data['pos'].values[0]
+        
+        st.header("Estadisticas clave")
+        st.write(f"La barra que puedes observar a continuación tiene como valores minimo y máximo cogiendo únicamente los jugadores de la posición de {player_name}.")
+    
+        for feature in selected_features:
+            min_val = df[df['pos'] == player_position][feature].min()
+            max_val = df[df['pos'] == player_position][feature].max()
+            player_val = player_data[feature].values[0]
+      
+            # Calcular el porcentaje del valor del jugador respecto al máximo
+            percentage = (player_val - min_val) / (max_val - min_val) * 100
+    
+            # Determinar el color basado en el porcentaje (de tonos oscuros a tonos claros de verde)
+            green_color = int(255 - (percentage * 1.27))
+            red_color = int(percentage * 1.27)
+            color = f"rgb({red_color}, {green_color}, 0)"
+            # Mostrar la barra de progreso con el estilo personalizado y el percentil
+            st.markdown(f"""
+            <div style="margin-bottom: 20px;">
+                <div style="margin-bottom: 5px;">{feature}: {player_val} (Percentil: {percentage:.2f}%)</div>
+                <div style="display: flex; align-items: center;">
+                    <div style="margin-right: 10px;">{min_val:.2f}</div>
+                    <div style="position: relative; height: 30px; width: 100%; border-radius: 5px; background: #f0f0f0;">
+                        <div style="width: {percentage}%; height: 100%; border-radius: 5px; background: {color};"></div>
+                    </div>
+                    <div style="margin-left: 10px;">{max_val:.2f}</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    st.write("Clica el siguiente botón si quieres buscar jugadores similares a este.")
+    numeric_features = df[df.columns].select_dtypes(include=[np.number]).columns.tolist()
+    df_normalized = normalize_features(df.copy(), numeric_features)
+    st.session_state.player = df_normalized.loc[player.index[0]]
+    st.page_link("pages/3_Análisis_de_similitud.py", label="Botón")
 except:
     st.write("Selecciona a un equipo en la pestaña de identificación posición débil antes de analizar a un jugador.")
 
 
-if len(selected_features) > 0:
-    position_data = df[df['pos'] == player_position][selected_features]
-    player_data = df[df['player'] == selected_player]
-    player_position = player_data['pos'].values[0]
-    
-    st.header("Estadisticas clave")
-    st.write(f"La barra que puedes observar a continuación tiene como valores minimo y máximo cogiendo únicamente los jugadores de la posición de {player_name}.")
 
-    for feature in selected_features:
-        min_val = df[df['pos'] == player_position][feature].min()
-        max_val = df[df['pos'] == player_position][feature].max()
-        player_val = player_data[feature].values[0]
-  
-        # Calcular el porcentaje del valor del jugador respecto al máximo
-        percentage = (player_val - min_val) / (max_val - min_val) * 100
-
-        # Determinar el color basado en el porcentaje (de tonos oscuros a tonos claros de verde)
-        green_color = int(255 - (percentage * 1.27))
-        red_color = int(percentage * 1.27)
-        color = f"rgb({red_color}, {green_color}, 0)"
-        # Mostrar la barra de progreso con el estilo personalizado y el percentil
-        st.markdown(f"""
-        <div style="margin-bottom: 20px;">
-            <div style="margin-bottom: 5px;">{feature}: {player_val} (Percentil: {percentage:.2f}%)</div>
-            <div style="display: flex; align-items: center;">
-                <div style="margin-right: 10px;">{min_val:.2f}</div>
-                <div style="position: relative; height: 30px; width: 100%; border-radius: 5px; background: #f0f0f0;">
-                    <div style="width: {percentage}%; height: 100%; border-radius: 5px; background: {color};"></div>
-                </div>
-                <div style="margin-left: 10px;">{max_val:.2f}</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-st.write("Clica el siguiente botón si quieres buscar jugadores similares a este.")
-numeric_features = df[df.columns].select_dtypes(include=[np.number]).columns.tolist()
-df_normalized = normalize_features(df.copy(), numeric_features)
-st.session_state.player = df_normalized.loc[player.index[0]]
-st.page_link("pages/3_Análisis_de_similitud.py", label="Botón")
