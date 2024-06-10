@@ -190,7 +190,10 @@ def select_features():
 
 # Cargar datos
 df, df_no_dav, df_dav = load_data()
-target_player = st.session_state.player
+try:
+    target_player = st.session_state.player
+except:
+    st.write("Selecciona en la pestaña de detalles del jugador a un jugador antes de hacer el análisis de similitud.")
 # Título de la aplicación
 st.title('Búsqueda de jugadores similares')
 st.write(f"En esta página puedes observar aquellos jugadores con un perfil similar a {target_player.player} de tal manera que puedas encontrar al sustituto ideal.")
