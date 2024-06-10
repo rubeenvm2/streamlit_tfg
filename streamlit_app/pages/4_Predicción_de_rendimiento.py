@@ -107,66 +107,66 @@ try:
     similar_team = st.session_state.similar_team
 except:
     st.write("Selecciona en la pestaña de análisis de similitud a un jugador y su equipo para comparar antes de hacer la predicción del rendimiento.")
-categorical_cols = []
-df_dav['pos'] = df_dav['pos'].apply(map_positions)
-df_no_dav['pos'] = df_no_dav['pos'].apply(map_positions)
-df['pos'] = df['pos'].apply(map_positions)
-df['DAVIES_next_season'] = 0
-
-for column in df_dav.select_dtypes(include=['object']).columns:
-    if column not in ['player', 'team', 'league', 'season', 'nation']:
-        categorical_cols.append(column)
-        df_dav[column] = data[f'le_{column}'].transform(df_dav[column])
-        df_no_dav[column] = data[f'le_{column}'].transform(df_no_dav[column])
-        df[column] = data[f'le_{column}'].transform(df[column])
-
-df_dav[columnas] = data["Scaler"].inverse_transform(df_dav[columnas])
-df[columnas] = data["Scaler"].inverse_transform(df[columnas])
-df_no_dav[columnas] = data["Scaler"].inverse_transform(df_no_dav[columnas])
-
-df_dav.loc[df_dav['pos'] == 4, 'pos'] = 2
-df_no_dav.loc[df_no_dav['pos'] == 4, 'pos'] = 2
-df_dav.pos = df_dav.pos.astype('int32')
-
-df_no_dav.loc[df_no_dav['pos'] == 2, 'pos'] = 1
-df_dav.loc[df_dav['pos'] == 2, 'pos'] = 1
-df_no_dav.pos = df_no_dav.pos.astype('int32')
-
-df_dav.loc[df_dav['Gen. Role'] == 12, 'Gen. Role'] = 2
-df_no_dav.loc[df_no_dav['Gen. Role'] == 12, 'Gen. Role'] = 2
-
-df_no_dav.loc[df_no_dav['Gen. Role'] == 36, 'Gen. Role'] = 6
-df_dav.loc[df_dav['Gen. Role'] == 36, 'Gen. Role'] = 6
-
-df_dav.loc[df_dav['Gen. Role'] == 30, 'Gen. Role'] = 5
-df_no_dav.loc[df_no_dav['Gen. Role'] == 30, 'Gen. Role'] = 5
-
-df_dav.loc[df_dav['Gen. Role'] == 6, 'Gen. Role'] = 1
-df_no_dav.loc[df_no_dav['Gen. Role'] == 6, 'Gen. Role'] = 1
-
-df_dav.loc[df_dav['Gen. Role'] == 18, 'Gen. Role'] = 3
-df_no_dav.loc[df_no_dav['Gen. Role'] == 18, 'Gen. Role'] = 3
-
-df_dav.loc[df_dav['Gen. Role'] == 24, 'Gen. Role'] = 4
-df_no_dav.loc[df_no_dav['Gen. Role'] == 24, 'Gen. Role'] = 4
-df_dav['Gen. Role'] = df_dav['Gen. Role'].astype('int32')
-df_no_dav['Gen. Role'] = df_no_dav['Gen. Role'].astype('int32')
-
-df_dav['Role'] = df_dav['Role'].rank(method='dense') - 1
-df_no_dav['Role'] = df_no_dav['Role'].rank(method='dense') - 1
-df_dav['Role'] = df_dav['Role'].astype('int32')
-df_no_dav['Role'] = df_no_dav['Role'].astype('int32')
-
-for column in categorical_cols:
-    print(column)
-    df_dav[column] = data[f'le_{column}'].inverse_transform(df_dav[column])
-    df_no_dav[column] = data[f'le_{column}'].inverse_transform(df_no_dav[column])
-
-
-
-st.write(f"En esta página primeramente verás una estadística de la media de rendimiento para cada temporada de los jugadores existentes en la base de datos. Estas puntuaciones van de 0 a infinito y han sido predichas mediante un modelo de machine learning basandose en todo tipo de estadisticas, tanto defensivas como ofensivas, como de creación de juego, progresión con el balón. Captando así el estilo de juego de {similar_player} para predecir correctamente el rendimiento.")
-create_scatterplots(df, similar_player)
 if similar_team:
+    categorical_cols = []
+    df_dav['pos'] = df_dav['pos'].apply(map_positions)
+    df_no_dav['pos'] = df_no_dav['pos'].apply(map_positions)
+    df['pos'] = df['pos'].apply(map_positions)
+    df['DAVIES_next_season'] = 0
+    
+    for column in df_dav.select_dtypes(include=['object']).columns:
+        if column not in ['player', 'team', 'league', 'season', 'nation']:
+            categorical_cols.append(column)
+            df_dav[column] = data[f'le_{column}'].transform(df_dav[column])
+            df_no_dav[column] = data[f'le_{column}'].transform(df_no_dav[column])
+            df[column] = data[f'le_{column}'].transform(df[column])
+    
+    df_dav[columnas] = data["Scaler"].inverse_transform(df_dav[columnas])
+    df[columnas] = data["Scaler"].inverse_transform(df[columnas])
+    df_no_dav[columnas] = data["Scaler"].inverse_transform(df_no_dav[columnas])
+    
+    df_dav.loc[df_dav['pos'] == 4, 'pos'] = 2
+    df_no_dav.loc[df_no_dav['pos'] == 4, 'pos'] = 2
+    df_dav.pos = df_dav.pos.astype('int32')
+    
+    df_no_dav.loc[df_no_dav['pos'] == 2, 'pos'] = 1
+    df_dav.loc[df_dav['pos'] == 2, 'pos'] = 1
+    df_no_dav.pos = df_no_dav.pos.astype('int32')
+    
+    df_dav.loc[df_dav['Gen. Role'] == 12, 'Gen. Role'] = 2
+    df_no_dav.loc[df_no_dav['Gen. Role'] == 12, 'Gen. Role'] = 2
+    
+    df_no_dav.loc[df_no_dav['Gen. Role'] == 36, 'Gen. Role'] = 6
+    df_dav.loc[df_dav['Gen. Role'] == 36, 'Gen. Role'] = 6
+    
+    df_dav.loc[df_dav['Gen. Role'] == 30, 'Gen. Role'] = 5
+    df_no_dav.loc[df_no_dav['Gen. Role'] == 30, 'Gen. Role'] = 5
+    
+    df_dav.loc[df_dav['Gen. Role'] == 6, 'Gen. Role'] = 1
+    df_no_dav.loc[df_no_dav['Gen. Role'] == 6, 'Gen. Role'] = 1
+    
+    df_dav.loc[df_dav['Gen. Role'] == 18, 'Gen. Role'] = 3
+    df_no_dav.loc[df_no_dav['Gen. Role'] == 18, 'Gen. Role'] = 3
+    
+    df_dav.loc[df_dav['Gen. Role'] == 24, 'Gen. Role'] = 4
+    df_no_dav.loc[df_no_dav['Gen. Role'] == 24, 'Gen. Role'] = 4
+    df_dav['Gen. Role'] = df_dav['Gen. Role'].astype('int32')
+    df_no_dav['Gen. Role'] = df_no_dav['Gen. Role'].astype('int32')
+    
+    df_dav['Role'] = df_dav['Role'].rank(method='dense') - 1
+    df_no_dav['Role'] = df_no_dav['Role'].rank(method='dense') - 1
+    df_dav['Role'] = df_dav['Role'].astype('int32')
+    df_no_dav['Role'] = df_no_dav['Role'].astype('int32')
+    
+    for column in categorical_cols:
+        print(column)
+        df_dav[column] = data[f'le_{column}'].inverse_transform(df_dav[column])
+        df_no_dav[column] = data[f'le_{column}'].inverse_transform(df_no_dav[column])
+    
+    
+    
+    st.write(f"En esta página primeramente verás una estadística de la media de rendimiento para cada temporada de los jugadores existentes en la base de datos. Estas puntuaciones van de 0 a infinito y han sido predichas mediante un modelo de machine learning basandose en todo tipo de estadisticas, tanto defensivas como ofensivas, como de creación de juego, progresión con el balón. Captando así el estilo de juego de {similar_player} para predecir correctamente el rendimiento.")
+    create_scatterplots(df, similar_player)
     actual_value = df_dav[(df_dav.player == similar_player) & (df_dav.season == df_dav.season.max()) & (df_dav.team == similar_team)]['DAVIES'].unique()[0]
     col1,col2 = st.columns(2)
     with col1:
