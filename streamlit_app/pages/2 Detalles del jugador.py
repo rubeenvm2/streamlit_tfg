@@ -32,7 +32,7 @@ try:
     team_of_player = st.session_state.selected_team
     st.title(f"Detalles del jugador")
     st.write(f"Escoge un jugador de tu equipo ({team_of_player}) para analizar y compararlo posteriormente frente a otros jugadores.")
-    last_season_df = df[(df.season=='2023-2024') & (df.team == team_of_player)].drop('season', axis=1)
+    last_season_df = df[(df.season=='2022-2023') & (df.team == team_of_player)].drop('season', axis=1)
     selected_player = st.selectbox("Escoge un jugador", last_season_df['player'].unique())
     player = last_season_df[(last_season_df['player'] == selected_player) & (last_season_df['team'] == team_of_player)]
     st.header("Player bio")
