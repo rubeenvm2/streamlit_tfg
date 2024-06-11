@@ -165,16 +165,16 @@ try:
         
         st.write(f"En esta página primeramente verás una estadística de la media de rendimiento para cada temporada de los jugadores existentes en la base de datos. Estas puntuaciones van de 0 a infinito y han sido predichas mediante un modelo de machine learning basandose en todo tipo de estadisticas, tanto defensivas como ofensivas, como de creación de juego, progresión con el balón. Captando así el estilo de juego de {similar_player} para predecir correctamente el rendimiento.")
         create_scatterplots(df, similar_player)
-        actual_value = df_dav[(df_dav.player == similar_player) & (df_dav.season == df_dav.season.max()) & (df_dav.team == similar_team)]['DAVIES'].unique()[0]
+        actual_value = df_dav[(df_dav.player == similar_player) & (df_dav.season == '2022-2023') & (df_dav.team == similar_team)]['DAVIES'].unique()[0]
         col1,col2 = st.columns(2)
         with col1:
             if stateful_button(f'Predecir rendimiento de {similar_player} en la temporada siguiente a la actual. (con DAVIES)', key="pred_DAV"):
-                prediction_value = df_dav[(df_dav.player == similar_player) & (df_dav.season == df_dav.season.max()) & (df_dav.team == similar_team)]['DAVIES_next_season'].unique()[0]
+                prediction_value = df_dav[(df_dav.player == similar_player) & (df_dav.season == '2022-2023') & (df_dav.team == similar_team)]['DAVIES_next_season'].unique()[0]
                 st.write(f"La performance de este año del jugador ha sido de {actual_value:.2f}. La predicción para el año siguiente es {prediction_value:.2f}")
     
         with col2:
             if stateful_button(f'Predecir rendimiento de {similar_player} en la temporada siguiente a la actual. (sin DAVIES)', key="pred_no_DAV"):
-                prediction_value = df_no_dav[(df_no_dav.player == similar_player) & (df_no_dav.season == df_no_dav.season.max()) & (df_no_dav.team == similar_team)]['DAVIES_next_season'].unique()[0]
+                prediction_value = df_no_dav[(df_no_dav.player == similar_player) & (df_no_dav.season == '2022-2023') & (df_no_dav.team == similar_team)]['DAVIES_next_season'].unique()[0]
                 st.write(f"La performance de este año del jugador ha sido de {actual_value:.2f}. La predicción para el año siguiente es {prediction_value:.2f}")
 
 except:
