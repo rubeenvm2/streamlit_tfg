@@ -4,4 +4,3 @@ matplotlib
 soccerplots
 lightgbm
 xgboost
-plotly
