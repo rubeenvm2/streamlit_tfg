@@ -6,5 +6,3 @@ lightgbm
 xgboost
 plotly.graph_objects
 plotly.express
-scikilt-learn.preprocessing
-clone
