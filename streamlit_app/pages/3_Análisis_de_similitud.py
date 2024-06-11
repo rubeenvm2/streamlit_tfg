@@ -30,11 +30,11 @@ def find_similar_players(df, target_player, target_team, features, top_n=10, lea
     # Filtrar solo las características numéricas
     numeric_features = df[features].select_dtypes(include=[np.number]).columns.tolist()
     df_normalized = normalize_features(df.copy(), numeric_features)
-    target_position = df[(df['player'] == target_player.player) & (df['team'] == target_team) & (df['season'] == df['season'].max())]['pos'].values[0].split(",")
+    target_position = df[(df['player'] == target_player.player) & (df['team'] == target_team) & (df['season'] == '2022-2023')]['pos'].values[0].split(",")
     target_position = [pos.strip() for pos in target_position]  # Eliminar espacios adicionales
 
     df = df[df['pos'].apply(lambda x: any(pos in x.split(",") for pos in target_position))]
-    target_vector = df_normalized[(df_normalized['player'] == target_player.player) & (df_normalized['team'] == target_team) & (df['season'] == df['season'].max())][numeric_features].values
+    target_vector = df_normalized[(df_normalized['player'] == target_player.player) & (df_normalized['team'] == target_team) & (df['season'] == '2022-2023')][numeric_features].values
     
     if leagues:
         df = df[df['league'].isin(leagues)]
@@ -50,7 +50,7 @@ def find_similar_players(df, target_player, target_team, features, top_n=10, lea
     df['similarity'] = df_normalized.iloc[df.index].similarity
 
     # Filtrar jugadores según los filtros opcionales
-    similar_players = df[(df['season'] == df['season'].max()) & (df['player'] != target_player.player)]
+    similar_players = df[(df['season'] == '2022-2023') & (df['player'] != target_player.player)]
     
     similar_players = similar_players.sort_values(by='similarity', ascending=False).head(top_n)
     
@@ -237,7 +237,7 @@ try:
     if selected_team and len(selected_features) > 0:
         similar_players = find_similar_players(df, selected_player, selected_team, selected_features, top_n, selected_leagues, selected_teams, age_range)
         st.header(f'Jugadores Similares a {selected_player.player} en {selected_team}')
-        selected_player_data = df[(df['player'] == selected_player.player) & (df['season'] == df['season'].max()) & (df.team == selected_team)]
+        selected_player_data = df[(df['player'] == selected_player.player) & (df['season'] == '2022-2023') & (df.team == selected_team)]
         for i, row in similar_players.iterrows():
             st.write(f"Jugador: {row['player']} | Equipo: {row['team']} | Similitud: {row['similarity']:.2f}%")
     
@@ -258,8 +258,8 @@ try:
         similar_player_name = selected_similar_player.split('|')[0].strip()
         df_normalized = normalize_features(df.copy(), selected_features)
         if len(selected_features) < 15 and len(selected_features) >= 3:
-            similar_player_data_norm = df_normalized[(df['player'] == similar_player_name) & (df['season'] == df['season'].max())]
-            selected_player_data_norm = df_normalized[(df['player'] == selected_player.player) & (df['season'] == df['season'].max()) & (df.team == selected_team)]
+            similar_player_data_norm = df_normalized[(df['player'] == similar_player_name) & (df['season'] == '2022-2023')]
+            selected_player_data_norm = df_normalized[(df['player'] == selected_player.player) & (df['season'] == '2022-2023') & (df.team == selected_team)]
             
             create_radar_plot(selected_player_data_norm, similar_player_data_norm, selected_features)
                 # Crear historia del jugador seleccionado
