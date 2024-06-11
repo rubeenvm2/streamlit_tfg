@@ -4,3 +4,5 @@ matplotlib
 soccerplots
 lightgbm
 xgboost
+plotly.graph_objects
+plotly.express
