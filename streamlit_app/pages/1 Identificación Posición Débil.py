@@ -3,7 +3,8 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import matplotlib.pyplot as plt
-
+import plotly.express as px
+import plotly.graph_objects as go
 
 st.set_page_config(
 page_title="Identifiación posición débil",
@@ -14,22 +15,23 @@ initial_sidebar_state="expanded")
 # Cargar los datos
 @st.cache_data
 def load_data():
-    # Cargar tu conjunto de datos de jugadores
-    return pd.read_csv('streamlit_app/data.csv')
-
+    df = pd.read_csv('data.csv')
+    df = df[df.season!='2023-2024']
+    return df
 df = load_data()
 
 st.title("Identifiación posición débil")
 
 st.write("Puedes usar esta página para identificar que posición tienes más debil respecto al resto de equipos en las estadísticas que te interesn según el perfil de tu equipo.")
 
+# Supongamos que 'df' es tu DataFrame
 teams = df['team'].unique()
 
 selected_team = st.selectbox('Selecciona tu equipo:', teams)
 st.session_state.selected_team = selected_team
 
-selected_stat1 = st.selectbox("Selecciona la segunda estadística", df.columns)  # Cambia 6: por el índice de tu primera estadística
-selected_stat2 = st.selectbox("Selecciona la primera estadística", df.columns)
+selected_stat1 = st.selectbox("Selecciona la primera estadística", df.columns)  # Cambia 6: por el índice de tu primera estadística
+selected_stat2 = st.selectbox("Selecciona la segunda estadística", df.columns.drop(selected_stat1))
 
 positions = df['pos'].unique()
 selected_positions = st.multiselect("Selecciona las posiciones a mostrar", positions)
@@ -54,17 +56,34 @@ filtered_df = df[
 
 if len(filtered_df) > 0:
     team_data = df[(df['team'] == selected_team) & (df.season == selected_season)]
+    fig = go.Figure()
+    
+    # Scatter plot para los datos del equipo seleccionado
+    fig.add_trace(go.Scatter(
+        x=team_data[selected_stat1],
+        y=team_data[selected_stat2],
+        mode='markers+text',
+        text=team_data['player'],
+        textposition='top center',
+        marker=dict(color='orange', size=10),
+        name=selected_team
+    ))
 
-    plt.scatter(x=filtered_df[selected_stat1], y=filtered_df[selected_stat2], color='black', alpha=0.3)
-    plt.scatter(team_data[selected_stat1], team_data[selected_stat2], color='orange', label=f'{selected_team}', s=100, alpha=0.8)
+    # Scatter plot para los datos filtrados
+    fig.add_trace(go.Scatter(
+        x=filtered_df[selected_stat1],
+        y=filtered_df[selected_stat2],
+        mode='markers',
+        marker=dict(color='white', opacity=0.6),
+        name='Otros equipos'
+    ))
 
-    for x, y, player in zip(team_data[selected_stat1], team_data[selected_stat2], team_data['player']):
-            # Calcular una ligera variación en la posición de la anotación
-            sign = np.random.choice([-1, 1])
-            offset = sign * (team_data.shape[0] / 30)  # Ajusta el valor 30 según la densidad de puntos
-            plt.annotate(player, (x, y), textcoords="offset points", xytext=(5+offset,-10+offset), ha='left')
-    plt.xlabel(selected_stat1)
-    plt.ylabel(selected_stat2)
-    plt.title(f"{selected_stat1} vs {selected_stat2}")
-    plt.legend()
-    st.pyplot(plt)
+    # Configurar las etiquetas y el título del gráfico
+    fig.update_layout(
+        title=f'{selected_stat1} vs {selected_stat2}',
+        xaxis_title=selected_stat1,
+        yaxis_title=selected_stat2,
+        legend_title='Leyenda'
+    )
+
+    st.plotly_chart(fig)
