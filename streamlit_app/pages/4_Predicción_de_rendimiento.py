@@ -175,11 +175,11 @@ initial_sidebar_state="expanded")
 # Función para cargar los datos
 @st.cache_data
 def load_data():
-    df = pd.read_csv('data.csv')
+    df = pd.read_csv('streamlit_app/data.csv')
     df = df[df.season!='2023-2024']
-    with open('lightgbm_30cols_davies.pkl', 'rb') as file:
+    with open('streamlit_app/lightgbm_30cols_davies.pkl', 'rb') as file:
         data = pickle.load(file)
-    with open('xgboost_30cols_no_davies.pkl', 'rb') as file:
+    with open('streamlit_app/xgboost_30cols_no_davies.pkl', 'rb') as file:
         data2 = pickle.load(file)
     return df, data, data2
 
