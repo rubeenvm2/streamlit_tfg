@@ -4,3 +4,4 @@ matplotlib
 soccerplots
 lightgbm
 xgboost
+shap
