@@ -108,7 +108,7 @@ css = """
 # Cargar los datos
 @st.cache_data
 def load_data():
-    df = pd.read_csv('streamlit_app/data.csv')
+    df = pd.read_csv('data.csv')
     df = df[df.season!='2023-2024']
     return df
 

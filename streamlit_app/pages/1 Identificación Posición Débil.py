@@ -15,7 +15,7 @@ initial_sidebar_state="expanded")
 # Cargar los datos
 @st.cache_data
 def load_data():
-    df = pd.read_csv('streamlit_app/data.csv')
+    df = pd.read_csv('data.csv')
     df = df[df.season!='2023-2024']
     return df
 df = load_data()
@@ -26,36 +26,42 @@ st.write("Puedes usar esta página para identificar que posición tienes más de
 
 # Supongamos que 'df' es tu DataFrame
 teams = df['team'].unique()
-
-selected_team = st.selectbox('Selecciona tu equipo:', teams)
+st.write("A continuación, seleccione el equipo que quiere analizar respecto al resto:")
+selected_team = st.selectbox('Selecciona un equipo:', teams)
 st.session_state.selected_team = selected_team
 
-selected_stat1 = st.selectbox("Selecciona la primera estadística", df.columns)  # Cambia 6: por el índice de tu primera estadística
+st.write("Una vez seleccionado el equipo, seleccione las estadisticas a analizar y filtre según le interese para su análisis.")
+selected_stat1 = st.selectbox("Selecciona la primera estadística", df.columns)
 selected_stat2 = st.selectbox("Selecciona la segunda estadística", df.columns.drop(selected_stat1))
-
+filtered_df = pd.DataFrame()
 positions = df['pos'].unique()
-selected_positions = st.multiselect("Selecciona las posiciones a mostrar", positions)
+selected_positions = st.multiselect("Selecciona las posiciones", positions)
+if selected_positions:    
+    filtered_df = df[df['pos'].isin(selected_positions)]
 
-seasons = df['season'].unique()
-selected_season = st.selectbox("Selecciona la temporada que quieres mirar", seasons)
+    seasons = filtered_df['season'].unique()
+    selected_season = st.selectbox("Selecciona una temporada", seasons)
+    if selected_season:
+        filtered_df = filtered_df[filtered_df['season'] == selected_season]
+        
+        leagues = filtered_df['league'].unique()
+        selected_leagues = st.multiselect("Selecciona las ligas", leagues)
+        if selected_leagues:
+            filtered_df = filtered_df[filtered_df['league'].isin(selected_leagues)]
+            
+            teams = filtered_df[filtered_df['team']!=selected_team]['team'].unique()
+            selected_teams = st.multiselect("Selecciona los equipos", teams)
+            if selected_teams:
+                filtered_df = filtered_df[filtered_df['team'].isin(selected_teams)]
 
-leagues = df['league'].unique()
-selected_league = st.multiselect("Selecciona las ligas deseadas en el gráfico", leagues)
+                min_age, max_age = st.slider("Selecciona rango de edad", int(filtered_df['age'].min()), int(filtered_df['age'].max()), (int(filtered_df['age'].min()), int(filtered_df['age'].max())))
+                filtered_df = filtered_df[(filtered_df['age'] >= min_age) & (filtered_df['age'] <= max_age)]
 
-min_age, max_age = st.slider("Selecciona rango de edad", int(df['age'].min()), int(df['age'].max()), (int(df['age'].min()), int(df['age'].max())))
-min_minutes, max_minutes = st.slider("Selecciona el rango de porcentjae de minutos", int(df['Min%'].min()), int(df['Min%'].max()), (int(df['Min%'].min()), int(df['Min%'].max())))
-
-filtered_df = df[
-    (df['pos'].isin(selected_positions)) &
-    (df['season'] == selected_season) &
-    (df['league'].isin(selected_league)) &
-    (df['age'] >= min_age) & (df['age'] <= max_age) &
-    (df['Min%'] >= min_minutes) & (df['Min%'] <= max_minutes) &
-    (df['team']!=(selected_team))
-]
+                min_minutes, max_minutes = st.slider("Selecciona el rango de porcentjae de minutos", int(filtered_df['Min%'].min()), int(filtered_df['Min%'].max()), (int(filtered_df['Min%'].min()), int(filtered_df['Min%'].max())))
+                filtered_df = filtered_df[(filtered_df['Min%'] >= min_minutes) & (filtered_df['age'] <= max_minutes)]
 
 if len(filtered_df) > 0:
-    team_data = df[(df['team'] == selected_team) & (df.season == selected_season)]
+    team_data = df[(df['team'] == selected_team) & (df.season == selected_season) & (df.pos.isin(selected_positions))]
     fig = go.Figure()
     
     # Scatter plot para los datos del equipo seleccionado
