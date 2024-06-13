@@ -16,11 +16,9 @@ initial_sidebar_state="expanded")
 # Función para cargar los datos
 @st.cache_data
 def load_data():
-    df = pd.read_csv('data.csv')
+    df = pd.read_csv('streamlit/data.csv')
     df = df[df.season!='2023-2024']
-    df_no_dav = pd.read_csv('model_output_no_dav.csv')
-    df_dav = pd.read_csv('model_output_dav.csv')
-    return df,df_no_dav,df_dav
+    return df
 
 # Función para normalizar las características seleccionadas
 def normalize_features(df, features):
@@ -214,7 +212,7 @@ def select_features():
     return selected_features
 
 # Cargar datos
-df, df_no_dav, df_dav = load_data()
+df= load_data()
 target_player = st.session_state.player
 # Título de la aplicación
 st.title('Búsqueda de jugadores similares')
