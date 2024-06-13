@@ -19,7 +19,7 @@ def load_data():
 df = load_data()
 # Página de bienvenida
 st.title("Bienvenido a la Herramienta de Análisis de Rendimiento de Jugadores")
-st.image("imagen.png")
+st.image("streamlit_app/imagen.png")
 
 st.markdown("""
 ### ¿Qué puedes hacer con esta herramienta?
