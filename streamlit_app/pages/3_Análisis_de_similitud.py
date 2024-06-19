@@ -248,10 +248,10 @@ estadisticas = {
 # Función para cargar los datos
 @st.cache_data
 def load_data():
-    df = pd.read_csv('data.csv')
+    df = pd.read_csv('streamlit_app/data.csv')
     df = df[df.season!='2023-2024']
-    df_no_dav = pd.read_csv('model_output_no_dav.csv')
-    df_dav = pd.read_csv('model_output_dav.csv')
+    df_no_dav = pd.read_csv('streamlit_app/model_output_no_dav.csv')
+    df_dav = pd.read_csv('streamlit_app/model_output_dav.csv')
     return df,df_no_dav,df_dav
 
 # Función para normalizar las características seleccionadas
