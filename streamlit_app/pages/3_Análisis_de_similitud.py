@@ -248,10 +248,10 @@ estadisticas = {
 # Función para cargar los datos
 @st.cache_data
 def load_data():
-    df = pd.read_csv('streamlit_app/data.csv')
+    df = pd.read_csv('data.csv')
     df = df[df.season!='2023-2024']
-    df_no_dav = pd.read_csv('streamlit_app/model_output_no_dav.csv')
-    df_dav = pd.read_csv('streamlit_app/model_output_dav.csv')
+    df_no_dav = pd.read_csv('model_output_no_dav.csv')
+    df_dav = pd.read_csv('model_output_dav.csv')
     return df,df_no_dav,df_dav
 
 # Función para normalizar las características seleccionadas
@@ -259,6 +259,10 @@ def normalize_features(df, features):
     scaler = StandardScaler()
     df[features] = scaler.fit_transform(df[features])
     return df
+
+def calculate_percentile(df, features):
+    percentiles_df = df[features].apply(lambda x: x if x.dtype == 'object' else x.rank(pct=True))
+    return percentiles_df
 
 # Función para encontrar jugadores similares
 def find_similar_players(df, target_player, target_team, features, top_n=10, leagues=None, teams=None, age_range=None):
@@ -309,8 +313,9 @@ def create_radar_plot(selected_player, player_data, features):
         title_fontsize=18,
         subtitle_fontsize=15,
     )
-    # Crea el gráfico de radar
-    fig, ax = radar.plot_radar(ranges=[(0, 1) for feature in features], 
+    print(selected_player[features])
+    ranges = []
+    fig, ax = radar.plot_radar(ranges=[(0,1) for feature in features], 
                             params= [estadisticas.get(col, col) for col in features], 
                             values=[selected_player[features].values.tolist()[0],player_data[features].values.tolist()[0]], 
                             radar_color=['#B6282F', '#344D94'], 
@@ -526,11 +531,11 @@ if selected_team and len(selected_features) > 0:
         
         # Crear radar plot para el jugador seleccionado
         similar_player_name = selected_similar_player.split('|')[0].strip()
-        df_normalized = normalize_features(df.copy(), selected_features)
+        df_normalized = calculate_percentile(df.copy(), ['player', 'team', 'season']+ selected_features)
+        print("AAAAAAA", df_normalized)
         if len(selected_features) < 15 and len(selected_features) >= 3:
-            similar_player_data_norm = df_normalized[(df['player'] == similar_player_name) & (df['season'] == '2022-2023')]
-            selected_player_data_norm = df_normalized[(df['player'] == selected_player.player) & (df['season'] == '2022-2023') & (df.team == selected_team)]
-
+            similar_player_data_norm = df_normalized[(df_normalized['player'] == similar_player_name) & (df_normalized['season'] == '2022-2023')]
+            selected_player_data_norm = df_normalized[(df_normalized['player'] == selected_player.player) & (df_normalized['season'] == '2022-2023') & (df_normalized.team == selected_team)]
             create_radar_plot(selected_player_data_norm, similar_player_data_norm, selected_features)
                 # Crear historia del jugador seleccionado
             st.header("Histórico del jugador seleccionado.")
