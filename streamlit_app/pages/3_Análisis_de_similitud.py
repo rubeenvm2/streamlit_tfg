@@ -248,10 +248,10 @@ estadisticas = {
 # Función para cargar los datos
 @st.cache_data
 def load_data():
-    df = pd.read_csv('data.csv')
+    df = pd.read_csv('streamlit_app/data.csv')
     df = df[df.season!='2023-2024']
-    df_no_dav = pd.read_csv('model_output_no_dav.csv')
-    df_dav = pd.read_csv('model_output_dav.csv')
+    df_no_dav = pd.read_csv('streamlit_app/model_output_no_dav.csv')
+    df_dav = pd.read_csv('streamlit_app/model_output_dav.csv')
     return df,df_no_dav,df_dav
 
 # Función para normalizar las características seleccionadas
@@ -313,8 +313,6 @@ def create_radar_plot(selected_player, player_data, features):
         title_fontsize=18,
         subtitle_fontsize=15,
     )
-    print(selected_player[features])
-    ranges = []
     fig, ax = radar.plot_radar(ranges=[(0,1) for feature in features], 
                             params= [estadisticas.get(col, col) for col in features], 
                             values=[selected_player[features].values.tolist()[0],player_data[features].values.tolist()[0]], 
@@ -526,13 +524,11 @@ if selected_team and len(selected_features) > 0:
         similar_players = pd.concat([selected_player_data, similar_players])
         if stateful_button('Mostrar tabla con las estadísticas.', key="similar_players"):
         #if st.button('Mostrar detalles completos'):
-            print(selected_features)
             st.write(similar_players[['player', 'team', 'pos'] + ['similarity'] + selected_features ])
         
         # Crear radar plot para el jugador seleccionado
         similar_player_name = selected_similar_player.split('|')[0].strip()
         df_normalized = calculate_percentile(df.copy(), ['player', 'team', 'season']+ selected_features)
-        print("AAAAAAA", df_normalized)
         if len(selected_features) < 15 and len(selected_features) >= 3:
             similar_player_data_norm = df_normalized[(df_normalized['player'] == similar_player_name) & (df_normalized['season'] == '2022-2023')]
             selected_player_data_norm = df_normalized[(df_normalized['player'] == selected_player.player) & (df_normalized['season'] == '2022-2023') & (df_normalized.team == selected_team)]
