@@ -15,7 +15,7 @@ initial_sidebar_state="expanded")
 # Cargar los datos
 @st.cache_data
 def load_data():
-    df = pd.read_csv('streamlit_app/data.csv')
+    df = pd.read_csv('data.csv')
     df = df[df.season!='2023-2024']
     return df
 df = load_data()
@@ -343,9 +343,10 @@ if len(filtered_df) > 0:
 
     # Configurar las etiquetas y el título del gráfico
     fig.update_layout(
-        title=f'{selected_stat1} vs {selected_stat2}',
-        xaxis_title=selected_stat1,
-        yaxis_title=selected_stat2,
+
+        title=f'{estadisticas.get(selected_stat1, selected_stat1)} vs {estadisticas.get(selected_stat2, selected_stat2)}',
+        xaxis_title=estadisticas.get(selected_stat1, selected_stat1),
+        yaxis_title=estadisticas.get(selected_stat2, selected_stat2),
         legend_title='Leyenda'
     )
 

@@ -343,7 +343,7 @@ css = """
 # Cargar los datos
 @st.cache_data
 def load_data():
-    df = pd.read_csv('streamlit_app/data.csv')
+    df = pd.read_csv('data.csv')
     df = df[df.season!='2023-2024']
     return df
 
@@ -380,23 +380,23 @@ html = f"""
 {css}
 <div class="bio-grid">
     <div class="bio-stat">
-        <div class="bio-stat-heading">Name</div>
+        <div class="bio-stat-heading">Nombre</div>
         <div class="bio-stat-value" id="player-name"><span class="white-text">{player_name}</span></div>
     </div>
     <div class="bio-stat">
-        <div class="bio-stat-heading">Position</div>
+        <div class="bio-stat-heading">Posición</div>
         <div class="bio-stat-value" id="player-position"><span class="white-text">{player_position}</span></div>
     </div>
     <div class="bio-stat">
-        <div class="bio-stat-heading">Age</div>
+        <div class="bio-stat-heading">Edad</div>
         <div class="bio-stat-value" id="player-age"><span class="white-text">{player_age}</span></div>
     </div>
     <div class="bio-stat">
-        <div class="bio-stat-heading">Nation</div>
+        <div class="bio-stat-heading">Nacionalidad</div>
         <div class="bio-stat-value" id="player-nation"><span class="white-text">{player_nation}</span></div>
     </div>
     <div class="bio-stat">
-        <div class="bio-stat-heading">Starts</div>
+        <div class="bio-stat-heading">Partidos titular</div>
         <div class="bio-stat-value" id="player-starts"><span class="white-text">{player_starts}</span></div>
     </div>
 </div>
