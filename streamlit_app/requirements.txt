@@ -1,5 +1,5 @@
 plotly
-numpy==1.26.4
+numpy
 scikit-learn
 matplotlib
 soccerplots
