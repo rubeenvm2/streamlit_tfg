@@ -1,8 +1,8 @@
 plotly
-numpy==1.26.4
+numpy
 scikit-learn
 matplotlib
 soccerplots
 lightgbm
 xgboost
-shap
+shap==0.46.0
