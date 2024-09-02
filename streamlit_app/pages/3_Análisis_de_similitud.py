@@ -540,7 +540,7 @@ if selected_team and len(selected_features) > 0:
         st.session_state.similar_player = similar_player_name
         st.session_state.similar_team = selected_similar_player.split('|')[1].strip()
         st.write(f"By pressing the button below, you will be redirected to a page where you can get a prediction of {similar_player_name}'s performance in the next season.")
-        st.page_link("pages/4_Performance_Prediction.py", label="Button")
+        st.page_link("pages/4_Predicción_de_rendimiento.py", label="Button")
     else:
         st.write(f"No sufficiently similar player found to {target_player.player}. Select a different combination of features or be less strict with the filters.")
 else:
