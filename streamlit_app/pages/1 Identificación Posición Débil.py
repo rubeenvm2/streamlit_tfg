@@ -20,7 +20,7 @@ def load_data():
 df = load_data()
 
 # Position mapping dictionary
-positions = {
+posiciones = {
     'FW': 'Forward',
     'MF': 'Midfielder',
     'DF': 'Defender',
@@ -33,7 +33,7 @@ positions = {
     # Add more positions as needed
 }
 
-leagues = {
+ligas = {
     'espla liga': 'La Liga (ESP)',
     'gerbundesliga': 'Bundesliga (GER)',
     'engpremier league': 'Premier League (ENG)',
@@ -43,7 +43,7 @@ leagues = {
 }
 
 # Diccionario de mapeo de estadísticas
-statistics = {
+estadisticas = {
     'groundDuelsWon': 'Ground duels won',
     'groundDuelsWonPercentage': 'Percentage of ground duels won',
     'aerialDuelsWonPercentage': 'Percentage of aerial duels won (SofaScore)',
