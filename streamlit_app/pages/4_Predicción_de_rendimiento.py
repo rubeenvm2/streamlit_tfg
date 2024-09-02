@@ -166,17 +166,18 @@ columnas = [
 'team_rank',
 'DAVIES'
 ]
-
 st.set_page_config(
-page_title="Predicción de rendimiento",
-page_icon="📈",
-layout="wide",
-initial_sidebar_state="expanded")
-# Función para cargar los datos
+    page_title="Performance Prediction",
+    page_icon="📈",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Function to load the data
 @st.cache_data
 def load_data():
     df = pd.read_csv('streamlit_app/data.csv')
-    df = df[df.season!='2023-2024']
+    df = df[df.season != '2023-2024']
     with open('streamlit_app/lightgbm_30cols_davies.pkl', 'rb') as file:
         data = pickle.load(file)
     with open('streamlit_app/xgboost_30cols_no_davies.pkl', 'rb') as file:
@@ -189,7 +190,7 @@ def stateful_button(*args, key=None, sidebar=False, **kwargs):
 
     if key not in st.session_state:
         st.session_state[key] = False
-    if sidebar==False:
+    if sidebar == False:
         if st.button(*args, **kwargs):
             st.session_state[key] = not st.session_state[key]
     else:
@@ -201,10 +202,10 @@ def create_linechart(df, player):
     all_seasons = sorted(df['season'].unique(), key=lambda x: int(x.split('-')[0]))
     player_data = df[(df.player == player) & (df.season != '2023-2024')]
     df = df[df.pos == player_data.pos.unique()[0]]
-    # Crear un scatter plot interactivo para los datos del jugador
+    # Create an interactive scatter plot for the player's data
     fig = go.Figure()
     
-    # Añadir puntos del jugador
+    # Add player points
     fig.add_trace(go.Scatter(
         x=player_data['season'],
         y=player_data['DAVIES'],
@@ -215,40 +216,40 @@ def create_linechart(df, player):
         name=player
     ))
 
-    # Calcular y añadir las medianas por temporada y posición
+    # Calculate and add medians by season and position
     relevant_seasons = player_data['season'].unique()
-    medianas = df[df['season'].isin(relevant_seasons)].groupby('season')['DAVIES'].mean().reset_index()
+    medians = df[df['season'].isin(relevant_seasons)].groupby('season')['DAVIES'].mean().reset_index()
     key_func = lambda x: int(x.split('-')[0])
 
-    # Aplica la función lambda a la columna 'season' para extraer el primer año de cada temporada
-    medianas['season_first_year'] = medianas['season'].apply(key_func)
+    # Apply the lambda function to the 'season' column to extract the first year of each season
+    medians['season_first_year'] = medians['season'].apply(key_func)
 
-    # Ordena las temporadas utilizando el primer año como clave
-    medianas_sorted = medianas.sort_values(by='season_first_year')
+    # Sort the seasons using the first year as the key
+    medians_sorted = medians.sort_values(by='season_first_year')
 
-    # Asigna las temporadas ordenadas de vuelta a la columna 'season' en medianas
-    medianas['season'] = pd.Categorical(medianas_sorted['season'], categories=all_seasons, ordered=True)
+    # Assign sorted seasons back to the 'season' column in medians
+    medians['season'] = pd.Categorical(medians_sorted['season'], categories=all_seasons, ordered=True)
 
-    # Elimina la columna temporal 'season_first_year' si ya no es necesaria
-    medianas.drop(columns=['season_first_year'], inplace=True)
+    # Drop the temporary 'season_first_year' column if no longer needed
+    medians.drop(columns=['season_first_year'], inplace=True)
 
-    # Añadir la línea de medias por posición
+    # Add the median line by position
     fig.add_trace(go.Scatter(
-        x=medianas['season'],
-        y=medianas['DAVIES'],
+        x=medians['season'],
+        y=medians['DAVIES'],
         mode='lines+markers+text',
-        text=[f'{val:.2f}' for val in medianas['DAVIES']],
+        text=[f'{val:.2f}' for val in medians['DAVIES']],
         textposition='top center',
         line=dict(color='red'),
-        name='Media de su posición'
+        name='Median of Position'
     ))
 
-    # Configurar las etiquetas y el título del gráfico
+    # Configure chart labels and title
     fig.update_layout(
-        title=f'Histórico de {player} - DAVIES',
+        title=f'Historical Data of {player} - DAVIES',
         xaxis_title='Season',
         yaxis_title='DAVIES',
-        legend_title='Leyenda',
+        legend_title='Legend',
         legend=dict(x=0, y=1),
         margin=dict(l=20, r=20, t=50, b=20)
     )
@@ -271,7 +272,8 @@ def plot_shap_waterfall(shap_values, input_data):
 
     shap.waterfall_plot(shap_values[0])
     st.pyplot(fig)
-st.title("Predicción de rendimiento")
+
+st.title("Performance Prediction")
 
 df, data, data2 = load_data()
 
@@ -280,10 +282,10 @@ model2 = data2['model']
 similar_player = st.session_state.similar_player
 similar_team = st.session_state.similar_team
 
-st.write(f"En esta página primeramente verás una estadística de la media de rendimiento para cada temporada de los jugadores existentes en la base de datos. Estas puntuaciones van de 0 a infinito y han sido predichas mediante un modelo de machine learning basandose en todo tipo de estadisticas, tanto defensivas como ofensivas, como de creación de juego, progresión con el balón. Captando así el estilo de juego de {similar_player} para predecir correctamente el rendimiento.")
+st.write(f"On this page, you will first see a statistic of the average performance for each season of the players in the database. These scores range from 0 to infinity and have been predicted using a machine learning model based on all kinds of statistics, including defensive, offensive, playmaking, and ball progression. This captures the playing style of {similar_player} to accurately predict performance.")
 create_linechart(df, similar_player)
 player_df = df.copy()
-player_df = player_df[player_df.season=='2022-2023']
+player_df = player_df[player_df.season == '2022-2023']
 player_df = player_df[player_df['player'] == similar_player]
 player_df['pos'] = player_df['pos'].apply(map_positions)
 player_df['DAVIES_next_season'] = 0
@@ -305,10 +307,10 @@ y_test2 = data2["y_test"]
 scaler2 = data2["Scaler"]
 
 if similar_team:
-    #actual_value = df_dav[(df_dav.player == similar_player) & (df_dav.season == '2022-2023') & (df_dav.team == similar_team)]['DAVIES'].unique()[0]
-    col1,col2 = st.columns(2)
+    # Actual value = df_dav[(df_dav.player == similar_player) & (df_dav.season == '2022-2023') & (df_dav.team == similar_team)]['DAVIES'].unique()[0]
+    col1, col2 = st.columns(2)
     with col1:
-        if stateful_button(f'Predecir rendimiento de {similar_player} en la temporada siguiente a la actual. (con DAVIES)', key="pred_DAV"):
+        if stateful_button(f'Predict performance of {similar_player} for the next season. (with DAVIES)', key="pred_DAV"):
             actual_value = player_df.DAVIES.unique()[0]
             player_df = player_df[columnas]
             cols = [col for col in player_df.columns if col != 'DAVIES_next_season' and col != 'DAVIES']
@@ -316,13 +318,13 @@ if similar_team:
             player_davies[cols] = scaler.transform(player_df[cols])
             X = player_davies[X_test.columns]
             prediction_value = model.predict(X)[0]
-            st.write(f"La performance de este año del jugador ha sido de {actual_value:.2f}. La predicción para el año siguiente es {prediction_value:.2f}")
-            st.write('Gráfico de Waterfall de SHAP Values:')
+            st.write(f"The player's performance this year has been {actual_value:.2f}. The prediction for next year is {prediction_value:.2f}")
+            st.write('Waterfall Chart of SHAP Values:')
             shap_values = compute_shap_values(model, X)
             plot_shap_waterfall(shap_values, X)
 
     with col2:
-        if stateful_button(f'Predecir rendimiento de {similar_player} en la temporada siguiente a la actual. (sin DAVIES)', key="pred_no_DAV"):
+        if stateful_button(f'Predict performance of {similar_player} for the next season. (without DAVIES)', key="pred_no_DAV"):
             actual_value = player_df.DAVIES.unique()[0]
             player_df = player_df[columnas]
             player_no_davies = player_df.copy()
@@ -332,6 +334,7 @@ if similar_team:
             X = player_no_davies[X_test2.columns]
             shap_values = compute_shap_values(model2, X)
             prediction_value = shap_values[0].base_values + shap_values[0].values.sum()
-            st.write(f"La performance de este año del jugador ha sido de {actual_value:.2f}. La predicción para el año siguiente es {prediction_value:.2f}")
-            st.write('Gráfico de Waterfall de SHAP Values:')
+            st.write(f"The player's performance this year has been {actual_value:.2f}. The prediction for next year is {prediction_value:.2f}")
+            st.write('Waterfall Chart of SHAP Values:')
             plot_shap_waterfall(shap_values, X)
+
