@@ -396,4 +396,4 @@ st.write("Click the button below if you want to search for similar players.")
 numeric_features = df[df.columns].select_dtypes(include=[np.number]).columns.tolist()
 df_normalized = normalize_features(df.copy(), numeric_features)
 st.session_state.player = df_normalized.loc[player.index[0]]
-st.page_link("pages/3_Similarity_Analysis.py", label="Button")
+st.page_link("pages/3_Análisis_de_similitud.py", label="Button")
