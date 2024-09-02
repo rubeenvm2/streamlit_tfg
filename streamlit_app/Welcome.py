@@ -2,70 +2,70 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Datos de ejemplo (se pueden reemplazar con los datos reales)
-# Cargar los datos
+# Example data (can be replaced with real data)
+# Load data
 
-# Configuración de la página
+# Page configuration
 st.set_page_config(
-    page_title="Bienvenida",
+    page_title="Welcome",
     page_icon="⚽",
     layout="centered"
 )
 @st.cache_data
 def load_data():
     df = pd.read_csv('streamlit_app/data.csv')
-    df = df[df.season!='2023-2024']
+    df = df[df.season != '2023-2024']
     return df
 df = load_data()
-# Página de bienvenida
-st.title("Bienvenido a la Herramienta de Análisis de Rendimiento de Jugadores")
+# Welcome page
+st.title("Welcome to the Player Performance Analysis Tool")
 st.image("streamlit_app/imagen.png")
 
 st.markdown("""
-### ¿Qué puedes hacer con esta herramienta?
-Esta aplicación te permitirá realizar análisis detallados del rendimiento de jugadores a lo largo de las temporadas. Podrás responder preguntas como:
-- ¿En qué posiciones tiene tu equipo menos potencial comparado con sus rivales?
-- ¿Cuáles son los puntos débiles de tus rivales?
-- ¿Cómo ha sido el rendimiento detallado de un jugador específico?
-- ¿Qué jugadores son los más similares a un jugador específico?
-- ¿Cuál es la predicción del rendimiento de un jugador para la próxima temporada y porqué?
+### What can you do with this tool?
+This application allows you to perform detailed analyses of player performance across seasons. You will be able to answer questions such as:
+- In which positions does your team have less potential compared to its rivals?
+- What are the weaknesses of your rivals?
+- What has been the detailed performance of a specific player?
+- Which players are most similar to a specific player?
+- What is the performance prediction for a player for the next season and why?
 
-### Parámetros Ajustables
-Podrás ajustar diversos parámetros para personalizar tus análisis, incluyendo:
-- Selección de estadísticas específicas
-- Filtros por equipo, liga, temporada, edad de los jugadores, y más
-- Configuración de los modelos de predicción
+### Adjustable Parameters
+You will be able to adjust various parameters to customize your analyses, including:
+- Selection of specific statistics
+- Filters by team, league, season, player age, and more
+- Configuration of prediction models
 
-### Datos de Muestra
-A continuación, puedes ver una muestra de los datos con los que trabajarás:
+### Sample Data
+Below, you can see a sample of the data you will be working with:
 """)
 
-# Mostrar una muestra de los datos
+# Display a sample of the data
 st.write(df[['player', 'season', 'team', 'pos'] + [col for col in df.columns if col not in ['player', 'season', 'team', 'pos']]].sample(10))
 
-# Comentario para agregar imágenes o recursos externos
-# Puedes agregar una imagen de bienvenida usando st.image('ruta_de_la_imagen.jpg')
-# Explicación breve sobre las funcionalidades de la herramienta
+# Comment to add images or external resources
+# You can add a welcome image using st.image('image_path.jpg')
+# Brief explanation of the tool's functionalities
 st.markdown("""
-### Pestañas de la aplicación
+### Application Tabs
 
-#### Identificación de Puntos Débiles
-En esta sección, podrás comparar a tu equipo con otros para identificar áreas de mejora.
+#### Identification of Weak Points
+In this section, you can compare your team with others to identify areas for improvement.
 
-#### Detalles del Jugador
-Analiza en profundidad el rendimiento de un jugador específico a lo largo de la última temporada.
+#### Player Details
+Analyze in depth the performance of a specific player throughout the last season.
 
-#### Comparación de Jugadores
-Encuentra jugadores similares al que estás analizando y compara sus estadísticas para tomar decisiones informadas.
+#### Player Comparison
+Find players similar to the one you are analyzing and compare their statistics to make informed decisions.
 
-#### Predicción del Rendimiento
-Utiliza modelos de predicción para estimar el rendimiento futuro de los jugadores y tomar decisiones estratégicas.
+#### Performance Prediction
+Use prediction models to estimate future player performance and make strategic decisions.
 """)
 
 st.markdown("""
-### ¿Listo para empezar?
-Navega por las páginas de la barra lateral en la izquierda de la pantalla para comenzar tu análisis.
+### Ready to get started?
+Navigate through the pages on the left sidebar to begin your analysis.
 """)
 
-# Comentario para el desarrollador
-# Puedes personalizar más la interfaz según las necesidades específicas del usuario y los datos disponibles.
+# Comment for the developer
+# You can further customize the interface according to the specific needs of the user and the available data.
